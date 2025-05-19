@@ -1,6 +1,7 @@
 # 🌐 Azure Infrastructure with Terraform
 
-This project provisions Azure infrastructure using a modular Terraform setup making it easy to deploy and manage cloud infrastructure with reusability and clarity. It includes common resources such as:
+This project provisions Azure infrastructure using a modular Terraform setup making it easy to deploy and manage cloud infrastructure with reusability and clarity. 
+It includes common resources such as:
 
 - Resource Group
 - Virtual Network
