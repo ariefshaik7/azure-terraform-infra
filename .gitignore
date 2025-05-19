@@ -9,7 +9,7 @@ terraform.tfstate.backup
 crash.log
 
 # Sensitive variable files (optional)
-*.tfvars
+# *.tfvars
 
 # Override files
 override.tf
