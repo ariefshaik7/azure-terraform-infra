@@ -108,22 +108,32 @@ az login
     ```bash
     terraform init
     ```
+3. Validate Configuration:
 
-3. Preview the changes:
+    ```bash
+    terraform validate
+    ```
+
+4. Preview the changes:
 
     ```bash
     terraform plan
     ```
-4. Apply the configuration:
+5. Apply the configuration:
 
     ```bash
     terraform apply
     ```
-5. Destroy the infrastructure (if needed):
+6. Destroy the infrastructure (if needed):
 
     ```bash
     terraform destroy
     ```
+7. Show Outputs:
+
+    ```bash
+    terraform output
+    ``
 
 ## License
 
