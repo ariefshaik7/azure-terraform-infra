@@ -133,7 +133,13 @@ az login
 
     ```bash
     terraform output
-    ``
+    ```
+7. If you don't see the desired output:
+
+    ```bash
+    terraform refresh
+    ```
+
 
 ## License
 
