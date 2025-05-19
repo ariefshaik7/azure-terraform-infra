@@ -93,6 +93,14 @@ Login to your Azure account using:
 ```bash
 az login
 ```
+Update terraform.tfvars:
+ - Set values for variables like:
+```bash
+resource_group_name = "your-rg"
+location            = "East US"
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
+
+```
 ---
 ##  Usage
 
