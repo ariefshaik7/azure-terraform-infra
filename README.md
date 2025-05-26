@@ -1,7 +1,7 @@
 
 # 🌐 Azure Infrastructure with Terraform
 
-This project provisions Azure infrastructure using a **modular Terraform setup**, designed for clean, reusable, and scalable infrastructure-as-code (IaC) practices for fast, single-environment deployments.
+This project provisions Azure infrastructure using a modular Terraform setup with remote state management. Designed for clean, reusable, and scalable IaC deployments in a single environment.
 
 It provisions common Azure resources including:
 
