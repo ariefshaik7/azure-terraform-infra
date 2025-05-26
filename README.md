@@ -23,7 +23,7 @@ azure-terraform-infra/
 ├── main.tf
 ├── outputs.tf
 ├── providers.tf
-├── terraform.tfvars         # Input variable values (not committed)
+├── terraform.tfvars         # Input variable values 
 ├── backend.config           # Remote backend config (not committed)
 ├── variables.tf
 ├── modules/
