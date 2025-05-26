@@ -1,7 +1,7 @@
 
 # 🌐 Azure Infrastructure with Terraform
 
-This project provisions Azure infrastructure using a **modular Terraform setup**, designed for clean, reusable, and scalable infrastructure-as-code (IaC) practices.
+This project provisions Azure infrastructure using a **modular Terraform setup**, designed for clean, reusable, and scalable infrastructure-as-code (IaC) practices for fast, single-environment deployments.
 
 It provisions common Azure resources including:
 
@@ -119,6 +119,9 @@ public_key_path      = "~/.ssh/id_rsa.pub"
 ---
 
 ## 🌐 Configuring Remote Backend
+
+
+### 📌 Make sure you have a remote backend configured.
 
 To manage Terraform state remotely in Azure Storage, use a `backend.config` file:
 
