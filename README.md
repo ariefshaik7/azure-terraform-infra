@@ -90,7 +90,7 @@ You can authenticate Terraform with Azure using one of the following:
 
 ## ⚙️ Using `terraform.tfvars`
 
-Create a `terraform.tfvars` file in your root directory with dummy or real values like:
+Create a `terraform.tfvars` file in your root directory with real values like:
 
 ```hcl
 location             = "centralindia"
