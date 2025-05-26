@@ -118,10 +118,23 @@ public_key_path      = "~/.ssh/id_rsa.pub"
 
 ---
 
+
+### 📌 Make sure you have a remote backend configured.
+
 ## 🌐 Configuring Remote Backend
 
 
-### 📌 Make sure you have a remote backend configured.
+Remote state is stored in an Azure Storage Account. Use the included script:
+
+```bash
+bash create-azure-tf-backend.sh
+```
+
+This script will:
+- Create a resource group
+- Create a uniquely named storage account
+- Create a blob container named `tfstate`
+
 
 To manage Terraform state remotely in Azure Storage, use a `backend.config` file:
 
