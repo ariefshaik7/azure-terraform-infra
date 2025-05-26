@@ -1,7 +1,9 @@
+
 # 🌐 Azure Infrastructure with Terraform
 
-This project provisions Azure infrastructure using a modular Terraform setup making it easy to deploy and manage cloud infrastructure with reusability and clarity. 
-It includes common resources such as:
+This project provisions Azure infrastructure using a **modular Terraform setup**, designed for clean, reusable, and scalable infrastructure-as-code (IaC) practices.
+
+It provisions common Azure resources including:
 
 - Resource Group
 - Virtual Network
@@ -21,7 +23,8 @@ azure-terraform-infra/
 ├── main.tf
 ├── outputs.tf
 ├── providers.tf
-├── terraform.tfvars
+├── terraform.tfvars         # Input variable values (not committed)
+├── backend.config           # Remote backend config (not committed)
 ├── variables.tf
 ├── modules/
 │   ├── resource-group/
@@ -33,123 +36,183 @@ azure-terraform-infra/
 │   ├── virtual-machine/
 │   └── storage-account/
 ```
-## Modules
-
-- `resource-group` – Creates a resource group in a specified Azure region.
-
-- `virtual-network` – Deploys a virtual network with address space and subnets.
-
-- `subnet` – Defines and provisions subnets within the virtual network.
-
-- `nsg` – Creates a Network Security Group with configurable rules.
-
-- `nic` – Provisions a network interface card attached to subnets and NSGs.
-
-- `public_ip` – Allocates a static public IP address.
-
-- `virtual-machine` – Deploys a virtual machine with network interfaces and public IP.
-
-- `storage-account` – Creates a storage account for general-purpose use.
-
-Each module includes:
-- `main.tf` – Resource configuration
-- `variables.tf` – Input variables
-- `outputs.tf` – Output values
 
 ---
 
-## Requirements
+## 📦 Modules Overview
 
-Make sure you have the following installed:
+Each module contains:
+- `main.tf` – Resource definitions
+- `variables.tf` – Input variables
+- `outputs.tf` – Module outputs
+
+### Modules:
+- **`resource-group`** – Creates a resource group in a chosen Azure region.
+- **`virtual-network`** – Defines a VNet with address space and subnets.
+- **`subnet`** – Creates a subnet inside the VNet.
+- **`nsg`** – Builds a Network Security Group with rule sets.
+- **`nic`** – Provisions NICs and attaches to subnets + NSGs.
+- **`public_ip`** – Allocates a public IP address.
+- **`virtual-machine`** – Creates a Linux VM with SSH key auth.
+- **`storage-account`** – Adds a general-purpose storage account.
+
+---
+
+## ✅ Prerequisites
+
+Ensure you have the following installed:
 
 - [Terraform](https://developer.hashicorp.com/terraform/downloads)
 - [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - An active Azure subscription
----
-
-## Authentication Methods
-
-There are several ways to authenticate to Azure when using Terraform:
-
-- **Azure CLI Authentication:**  
-  Use `az login` to authenticate your CLI session, which Terraform will use automatically.
-
-- **Service Principal with Client Secret:**  
-  Create a service principal and provide the client ID, client secret, and tenant ID as environment variables or in your provider configuration.
-
-- **Managed Identity:**  
-  Use a managed identity (if running on Azure resources like Azure VM or Azure DevOps) to authenticate without credentials.
-
-- **Environment Variables:**  
-  Set environment variables such as `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, and `ARM_SUBSCRIPTION_ID` for Terraform Azure Provider to use.
-
-- **Azure Cloud Shell:**  
-  Running Terraform inside Azure Cloud Shell automatically authenticates via the shell's identity.
-
 
 ---
 
-Login to your Azure account using:
+## 🔐 Authentication Methods
+
+You can authenticate Terraform with Azure using one of the following:
+
+- **Azure CLI:**  
+  Run `az login` and Terraform will auto-use your session.
+
+- **Service Principal:**  
+  Export these environment variables:
+  ```bash
+  export ARM_CLIENT_ID=""
+  export ARM_CLIENT_SECRET=""
+  export ARM_SUBSCRIPTION_ID=""
+  export ARM_TENANT_ID=""
+  ```
+
+- **Azure Cloud Shell / Managed Identity** is also supported.
+
+---
+
+## ⚙️ Using `terraform.tfvars`
+
+Create a `terraform.tfvars` file in your root directory with dummy or real values like:
+
+```hcl
+location             = "centralindia"
+resource_group_name  = "rg-demo"
+
+vnet_name            = "vnet-demo"
+vnet_address_space   = ["10.0.0.0/16"]
+
+subnet_name          = "subnet-demo"
+subnet_address_prefixes = ["10.0.1.0/24"]
+
+nsg_name             = "nsg-demo"
+public_ip_name       = "public-ip-demo"
+allocation_method    = "Dynamic"
+
+nic_name             = "nic-demo"
+vm_name              = "vm-demo"
+vm_size              = "Standard_B1ls"
+computer_name        = "vm-host"
+admin_username       = "azureuser"
+public_key_path      = "~/.ssh/id_rsa.pub"
+```
+
+📌 *Note: Never commit this file with real secrets or private values.*
+
+---
+
+## 🌐 Configuring Remote Backend
+
+To manage Terraform state remotely in Azure Storage, use a `backend.config` file:
+
+```hcl
+resource_group_name  = "demo-rg"
+storage_account_name = "demostorage123"
+container_name       = "tfstate"
+key                  = "terraform.tfstate"
+```
+
+Initialize Terraform with it:
 
 ```bash
-az login
+terraform init -backend-config="backend.config"
 ```
-Update terraform.tfvars:
- - Set values for variables like:
-```bash
-resource_group_name = "your-rg"
-location            = "East US"
-ssh_public_key_path = "~/.ssh/id_rsa.pub"
 
-```
+✅ *Do not commit real backend configs. Use placeholders or `.gitignore`.*
+
 ---
-##  Usage
 
-1. Clone the repository:
+## 🚀 Usage
 
+1. **Clone this repository**:
     ```bash
-    git clone https://github.com/yourusername/your-repo-name.git
-    cd your-repo-name
+    git clone https://github.com/yourusername/azure-terraform-infra.git
+    cd azure-terraform-infra
     ```
 
-2. Initialize Terraform:
-
+2. **Login to Azure**:
     ```bash
-    terraform init
+    az login
     ```
-3. Validate Configuration:
 
+3. **Initialize Terraform**:
+    ```bash
+    terraform init -backend-config="backend.config"
+    ```
+
+4. **Validate configuration**:
     ```bash
     terraform validate
     ```
 
-4. Preview the changes:
-
+5. **Preview the changes**:
     ```bash
-    terraform plan
+    terraform plan -var-file="terraform.tfvars"
     ```
-5. Apply the configuration:
 
+6. **Apply the configuration**:
     ```bash
-    terraform apply
+    terraform apply -var-file="terraform.tfvars"
     ```
-6. Destroy the infrastructure (if needed):
 
-    ```bash
-    terraform destroy
-    ```
-7. Show Outputs:
-
+7. **View Outputs**:
     ```bash
     terraform output
     ```
-7. If you don't see the desired output:
 
+8. **To refresh state** (if needed):
     ```bash
     terraform refresh
     ```
 
+9. **To destroy resources**:
+    ```bash
+    terraform destroy -var-file="terraform.tfvars"
+    ```
 
-## License
+---
 
-This project is open source and available under the MIT License.
+## 🛑 Recommended `.gitignore`
+
+```bash
+*.tfstate
+*.tfstate.backup
+.terraform/
+terraform.tfvars
+backend.config
+*.pem
+*.key
+*.log
+```
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## 🙌 Contributions
+
+Feel free to fork, improve, and submit PRs!
+
+---
+

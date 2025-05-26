@@ -9,7 +9,7 @@ terraform.tfstate.backup
 crash.log
 
 # Sensitive variable files (optional)
-# *.tfvars
+*.tfvars
 
 # Override files
 override.tf
@@ -24,3 +24,5 @@ override.tf.json
 
 # Lock file (optional to exclude)
 .terraform.lock.hcl
+
+backend.config
