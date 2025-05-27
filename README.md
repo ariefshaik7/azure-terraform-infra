@@ -203,27 +203,44 @@ terraform init -backend-config="backend.config"
 
 ---
 
-## 🔁 Using Workspaces (Local Backend Alternative)
+## 🔄 Using Workspaces with Remote Backend
 
-If you prefer to use **Terraform workspaces** to manage multiple environments (e.g., `dev`, `staging`, `prod`), you can do so **only with the local backend**, or by carefully managing remote state keys.
+Terraform does **not** automatically manage state files per workspace when using a remote backend.
 
-### 🧯 Disable Remote Backend
+To use workspaces properly:
 
-1. **Remove the backend block** by deleting the `backend.tf` file.
+### 1. Create separate `backend-<env>.config` files
 
-2. **Delete or ignore** any existing `backend.config`.
+**Example: `backend-dev.config`**
 
----
-
-### 🛠️ Initialize Terraform Without Remote Backend
-
-```bash
-terraform init
+```hcl
+resource_group_name  = "demo-rg"
+storage_account_name = "demostorage123"
+container_name       = "tfstate"
+key                  = "dev/terraform.tfstate"
 ```
 
+**Example: `backend-prod.config`**
+
+```hcl
+resource_group_name  = "demo-rg"
+storage_account_name = "demostorage123"
+container_name       = "tfstate"
+key                  = "prod/terraform.tfstate"
+```
+
+### 2. Initialize the correct environment
+
+```bash
+terraform init -backend-config="backend-dev.config"
+```
+
+
+Each workspace uses its own state file (as defined by the `key` in config).
+
 ---
 
-### 🧪 Create and Use Workspaces
+### 3. Create and Use Workspaces
 
 ```bash
 terraform workspace new dev
@@ -235,10 +252,13 @@ terraform workspace select dev
 
 ---
 
-### 🧾 Apply Per Workspace
+### 4. Apply Per Workspace
 
 ```bash
+terraform validate
+
 terraform plan -var-file="terraform.tfvars"
+
 terraform apply -var-file="terraform.tfvars"
 ```
 
@@ -272,14 +292,6 @@ azure-terraform-infra/
 ├── modules/
 │   ├── ...
 ```
-
----
-
-### ✅ Benefits of Workspaces (Local)
-
-- Isolated state for each environment
-- No need to manage backend keys
-- Simple setup for local or non-team use
 
 ---
 
