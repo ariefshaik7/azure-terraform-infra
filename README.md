@@ -1,7 +1,7 @@
 
 # 🌐 Azure Infrastructure with Terraform
 
-This project provisions Azure infrastructure using a **modular Terraform setup** with **remote state management**. Designed for clean, reusable, and scalable IaC deployments in a single environment.
+This project provisions Azure infrastructure using a **modular Terraform setup** with **remote state management**. Designed for clean, reusable, and scalable IaC deployments.
 
 It provisions common Azure resources including:
 
@@ -25,6 +25,7 @@ azure-terraform-infra/
 ├── providers.tf
 ├── terraform.tfvars         # Input variable values 
 ├── backend.config           # Remote backend config (not committed)
+├── backend.tf               # Contains backend configuration block
 ├── variables.tf
 ├── modules/
 │   ├── resource-group/
@@ -118,11 +119,9 @@ public_key_path      = "~/.ssh/id_rsa.pub"
 
 ---
 
-
 ### 📌 Make sure you have a remote backend configured.
 
 ## 🌐 Configuring Remote Backend
-
 
 Remote state is stored in an Azure Storage Account. Use the included script:
 
@@ -134,7 +133,6 @@ This script will:
 - Create a resource group
 - Create a uniquely named storage account
 - Create a blob container named `tfstate`
-
 
 To manage Terraform state remotely in Azure Storage, use a `backend.config` file:
 
@@ -205,6 +203,92 @@ terraform init -backend-config="backend.config"
 
 ---
 
+## 🔁 Using Workspaces (Local Backend Alternative)
+
+If you prefer to use **Terraform workspaces** to manage multiple environments (e.g., `dev`, `staging`, `prod`), you can do so **only with the local backend**, or by carefully managing remote state keys.
+
+### 🧯 Disable Remote Backend
+
+1. **Remove the backend block** by deleting the `backend.tf` file.
+
+2. **Delete or ignore** any existing `backend.config`.
+
+---
+
+### 🛠️ Initialize Terraform Without Remote Backend
+
+```bash
+terraform init
+```
+
+---
+
+### 🧪 Create and Use Workspaces
+
+```bash
+terraform workspace new dev
+terraform workspace new staging
+terraform workspace new prod
+
+terraform workspace select dev
+```
+
+---
+
+### 🧾 Apply Per Workspace
+
+```bash
+terraform plan -var-file="terraform.tfvars"
+terraform apply -var-file="terraform.tfvars"
+```
+
+Each workspace will automatically create its own state file:
+
+```
+terraform.tfstate.d/
+├── dev/
+│   └── terraform.tfstate
+├── staging/
+│   └── terraform.tfstate
+├── prod/
+│   └── terraform.tfstate
+```
+
+---
+
+### 🧼 Directory Structure with Workspaces (Local Backend)
+
+```
+azure-terraform-infra/
+├── main.tf
+├── outputs.tf
+├── providers.tf
+├── terraform.tfvars
+├── variables.tf
+├── terraform.tfstate.d/
+│   ├── dev/
+│   ├── staging/
+│   └── prod/
+├── modules/
+│   ├── ...
+```
+
+---
+
+### ✅ Benefits of Workspaces (Local)
+
+- Isolated state for each environment
+- No need to manage backend keys
+- Simple setup for local or non-team use
+
+---
+
+### ⚠️ Warning for Remote Backends
+
+If you're using a **remote backend** (like Azure Storage), workspaces **do not automatically create separate state files**. You must explicitly configure different `key` values per workspace (see the [official doc](https://developer.hashicorp.com/terraform/language/state/workspaces)).
+
+---
+
 ## 🛑 Recommended `.gitignore`
 
 ```bash
@@ -231,4 +315,3 @@ This project is open-source and available under the [MIT License](LICENSE).
 Feel free to fork, improve, and submit PRs!
 
 ---
-
